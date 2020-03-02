@@ -52,8 +52,8 @@ function Item({ id, name, image, selected, onSelect }) {
 
 function UserDetails({ id, gender }) {
   return (
-    <View style={styles.main_userdetail}>
-      <Text style={styles.toolbar_userdetail}>Details of the person!</Text>
+    <View>
+      <Text style={styles.userdetailToolbar}>Details of the person!</Text>
       <Text>
         This is the detail view:{gender}
       </Text>
@@ -120,42 +120,52 @@ export default function App() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text>{`Window Orientation - ${orientationStatus}`}</Text>
-      <Text>{`isPortrait - ${isPortrait()}`}</Text>
-      <Text>{`isLandscape- ${isLandscape()}`}</Text>
-      <Text>{`isPhone() - ${isPhone()}`}</Text>
-      <Text>{`isTablet() - ${isTablet()}`}</Text>
-      <Text>{`Window Dimensions: height - ${dimensions.window.height}, width - ${dimensions.window.width}`}</Text>
-      <Text>{`Screen Dimensions: height - ${dimensions.screen.height}, width - ${dimensions.screen.width}`}</Text>
-      <Text 
-        style={styles.toolbar}>
-           List of people
-      </Text>
-      <FlatList
-        data={data.results}
-        renderItem={({ item }) => (
-          <Item
-            id={item.id.value}
-            name={item.name.first}
-            image={item.picture.large}
-            selected={!!selected.get(item.id.value)}
-            onSelect={onSelect}
+    <View style={styles.superContainer}>
+        <SafeAreaView style={styles.container}>
+          <Text>{`Window Orientation - ${orientationStatus}`}</Text>
+          <Text>{`isPortrait - ${isPortrait()}`}</Text>
+          <Text>{`isLandscape- ${isLandscape()}`}</Text>
+          <Text>{`isPhone() - ${isPhone()}`}</Text>
+          <Text>{`isTablet() - ${isTablet()}`}</Text>
+          <Text>{`Window Dimensions: height - ${dimensions.window.height}, width - ${dimensions.window.width}`}</Text>
+          <Text>{`Screen Dimensions: height - ${dimensions.screen.height}, width - ${dimensions.screen.width}`}</Text>
+          <Text 
+            style={styles.toolbar}>
+              List of people
+          </Text>
+          <FlatList
+            data={data.results}
+            renderItem={({ item }) => (
+              <Item
+                id={item.id.value}
+                name={item.name.first}
+                image={item.picture.large}
+                selected={!!selected.get(item.id.value)}
+                onSelect={onSelect}
+              />
+            )}
+            keyExtractor={item => item.id.value}
+            extraData={selected}
           />
-        )}
-        keyExtractor={item => item.id.value}
-        extraData={selected}
-      />
-       {() => isTablet() &&  
-            <UserDetails gender={data.results[0].gender}/>
-          }
-    </SafeAreaView>
+        </SafeAreaView>
+
+      {isTablet() && isLandscape() &&  
+        <View style={styles.userdetailMain}>
+          <UserDetails gender={data.results[0].gender} />      
+        </View>
+        }
+
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  superContainer: {
     flex: 1,
+    flexDirection: "row",
+  },
+  container: {
+    flex: 2,
     marginTop: Constants.statusBarHeight,
   },
   dimensions: {
@@ -191,11 +201,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'right',
   },
-  main_userdetail: {
+  userdetailMain: {
     flex: 3,
     backgroundColor: '#f0f3f4',
   },
-  toolbar_userdetail: {
+  userdetailToolbar: {
     backgroundColor: '#2989dd',
     color: '#fff',
     paddingTop: 50,
